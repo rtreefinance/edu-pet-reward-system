@@ -22,7 +22,6 @@ export default {
         'yellow-light': '#FEF9C3',
         red: '#EF4444',
         'red-light': '#FEE2E2',
-        gray: '#9CA3AF',
         'gray-light': '#F3F4F6',
         'bg-light': '#FFF5F7',
         'bg-card': '#FFFFFF',
@@ -82,11 +81,5 @@ export default {
       },
     },
   },
-  safelist: [
-    // Gray shades — used in JSX but JIT needs guarantee for @apply fallback
-    { pattern: /^bg-gray-(100|200)$/ },
-    { pattern: /^border-gray-(100|200)$/ },
-    { pattern: /^text-gray-(500|600)$/ },
-  ],
   plugins: [],
 };

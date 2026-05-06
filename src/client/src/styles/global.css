@@ -24,7 +24,7 @@
            hover:brightness-110;
   }
   .btn-accent {
-    @apply bg-gradient-to-r from-accent to-yellow-400 text-text-main font-bold py-3 px-6 rounded-button
+    @apply bg-gradient-to-r from-accent to-yellow text-text-main font-bold py-3 px-6 rounded-button
            shadow-md active:scale-95 transition-transform duration-150
            hover:brightness-105;
   }
