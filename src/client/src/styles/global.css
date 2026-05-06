@@ -1,0 +1,128 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-bg-light text-text-main font-sans;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-gradient-to-r from-primary to-pink-400 text-white font-bold py-3 px-6 rounded-button
+           shadow-button active:scale-95 transition-transform duration-150
+           hover:brightness-110;
+  }
+  .btn-secondary {
+    @apply bg-gradient-to-r from-secondary to-teal-300 text-white font-bold py-3 px-6 rounded-button
+           shadow-md active:scale-95 transition-transform duration-150
+           hover:brightness-110;
+  }
+  .btn-accent {
+    @apply bg-gradient-to-r from-accent to-yellow-400 text-text-main font-bold py-3 px-6 rounded-button
+           shadow-md active:scale-95 transition-transform duration-150
+           hover:brightness-105;
+  }
+  .btn-outline {
+    @apply border-2 border-primary text-primary font-bold py-2.5 px-6 rounded-button
+           active:scale-95 transition-all duration-150 hover:bg-primary hover:text-white;
+  }
+  .card {
+    @apply bg-bg-card rounded-card shadow-card p-4 animate-slide-up;
+  }
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-bold;
+  }
+  .badge-pink {
+    @apply badge bg-pink-100 text-primary;
+  }
+  .badge-blue {
+    @apply badge bg-blue-100 text-secondary;
+  }
+  .badge-green {
+    @apply badge bg-green-100 text-green;
+  }
+  .badge-yellow {
+    @apply badge bg-yellow-100 text-yellow-600;
+  }
+  .badge-purple {
+    @apply badge bg-purple-100 text-purple;
+  }
+  .skeleton {
+    @apply bg-gray-200 rounded-lg animate-pulse;
+  }
+  .input-field {
+    @apply w-full px-4 py-3 rounded-button border-2 border-gray-200 bg-white
+           text-text-main placeholder-text-sub focus:outline-none focus:border-primary
+           transition-colors duration-200;
+  }
+  .empty-state {
+    @apply flex flex-col items-center justify-center py-12 text-text-sub;
+  }
+}
+
+/* Pet CSS art */
+.pet-body {
+  @apply relative w-32 h-32 rounded-full flex items-center justify-center
+         transform transition-all duration-500;
+}
+.pet-eye {
+  @apply absolute w-4 h-4 rounded-full bg-text-main;
+}
+.pet-mouth {
+  @apply absolute w-8 h-4 border-b-4 border-text-main rounded-b-full;
+}
+
+/* Coin animation */
+.coin-particle {
+  @apply absolute pointer-events-none animate-coin-pop;
+}
+
+/* Streak fire */
+@keyframes flameFlicker {
+  0%, 100% { transform: scaleY(1) rotate(-2deg); }
+  50% { transform: scaleY(1.1) rotate(2deg); }
+}
+.flame-anim {
+  animation: flameFlicker 0.3s ease-in-out infinite alternate;
+}
+
+/* Star sparkle for perfect score */
+@keyframes starBurst {
+  0% { transform: scale(0) rotate(0deg); opacity: 1; }
+  100% { transform: scale(1.5) rotate(180deg); opacity: 0; }
+}
+.star-burst::after {
+  content: '⭐';
+  position: absolute;
+  animation: starBurst 1s ease-out infinite;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-primary/30 rounded-full;
+}
+
+/* Mobile bottom nav */
+.mobile-nav {
+  @apply fixed bottom-0 left-0 right-0 bg-bg-card border-t border-gray-100
+         flex justify-around items-center py-2 px-4 z-50;
+}
+.mobile-nav-item {
+  @apply flex flex-col items-center gap-1 text-xs text-text-sub
+         transition-colors duration-200;
+}
+.mobile-nav-item.active {
+  @apply text-primary;
+}
+.mobile-nav-item .nav-icon {
+  @apply text-xl;
+}
