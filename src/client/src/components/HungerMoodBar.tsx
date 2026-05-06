@@ -6,7 +6,7 @@ interface HungerMoodBarProps {
 }
 
 export default function HungerMoodBar({ hunger, mood }: HungerMoodBarProps) {
-  const hungerColor = hunger > 60 ? 'bg-green' : hunger > 30 ? 'bg-accent' : 'bg-red-400';
+  const hungerColor = hunger > 60 ? 'bg-green' : hunger > 30 ? 'bg-accent' : 'bg-red';
   const moodColor = mood > 60 ? 'bg-primary' : mood > 30 ? 'bg-accent' : 'bg-gray-400';
 
   return (

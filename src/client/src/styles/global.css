@@ -14,7 +14,7 @@
 
 @layer components {
   .btn-primary {
-    @apply bg-gradient-to-r from-primary to-pink-400 text-white font-bold py-3 px-6 rounded-button
+    @apply bg-gradient-to-r from-primary to-pink text-white font-bold py-3 px-6 rounded-button
            shadow-button active:scale-95 transition-transform duration-150
            hover:brightness-110;
   }
@@ -39,19 +39,19 @@
     @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-bold;
   }
   .badge-pink {
-    @apply badge bg-pink-100 text-primary;
+    @apply badge bg-pink-light text-primary;
   }
   .badge-blue {
-    @apply badge bg-blue-100 text-secondary;
+    @apply badge bg-blue-light text-blue;
   }
   .badge-green {
-    @apply badge bg-green-100 text-green;
+    @apply badge bg-green-light text-green;
   }
   .badge-yellow {
-    @apply badge bg-yellow-100 text-yellow-600;
+    @apply badge bg-yellow-light text-yellow-600;
   }
   .badge-purple {
-    @apply badge bg-purple-100 text-purple;
+    @apply badge bg-purple-light text-purple;
   }
   .skeleton {
     @apply bg-gray-200 rounded-lg animate-pulse;

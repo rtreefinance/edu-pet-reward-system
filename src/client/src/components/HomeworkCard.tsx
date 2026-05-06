@@ -10,8 +10,8 @@ interface HomeworkCardProps {
 
 const STATUS_CONFIG: Record<HomeworkStatus, { label: string; color: string; icon: string }> = {
   [HomeworkStatus.Pending]: { label: '待完成', color: 'bg-gray-100 text-gray-500', icon: '📝' },
-  [HomeworkStatus.Submitted]: { label: '已提交', color: 'bg-blue-100 text-blue-500', icon: '📤' },
-  [HomeworkStatus.Graded]: { label: '已批改', color: 'bg-green-100 text-green-600', icon: '✅' },
+  [HomeworkStatus.Submitted]: { label: '已提交', color: 'bg-blue-light text-blue', icon: '📤' },
+  [HomeworkStatus.Graded]: { label: '已批改', color: 'bg-green-light text-green', icon: '✅' },
 };
 
 export default function HomeworkCard({ homework, teacherName, onClick }: HomeworkCardProps) {
