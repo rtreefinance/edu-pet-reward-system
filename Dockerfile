@@ -50,6 +50,9 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3001
 
+# Alpine needs wget for healthcheck
+RUN apk add --no-cache wget
+
 # Copy compiled server artifacts from build-server
 COPY --from=build-server /app/dist/server/ ./dist/server/
 COPY --from=build-server /app/node_modules/ ./node_modules/
