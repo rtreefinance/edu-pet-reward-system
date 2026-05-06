@@ -81,6 +81,9 @@ TransactionSchema.pre('save', function (next) {
 });
 
 // ---- Static: create a transaction and update student balance ----
+// Wrapped in a MongoDB session to prevent TOCTOU race conditions.
+// Accepts an optional session parameter for callers that want to compose
+// this operation atomically with other writes (e.g. pet.save).
 
 TransactionSchema.statics.record = async function (params: {
   studentId: string;
@@ -88,36 +91,56 @@ TransactionSchema.statics.record = async function (params: {
   amount: number;
   reference?: { model: string; id: string };
   description?: string;
+  session?: mongoose.ClientSession;
 }): Promise<ITransaction> {
   const User = mongoose.model('User');
 
-  const student = await User.findById(params.studentId);
-  if (!student) {
-    throw new Error(`Student ${params.studentId} not found`);
+  // Core logic that runs within a session (provided or auto-created)
+  const executeInSession = async (session: mongoose.ClientSession): Promise<ITransaction> => {
+    // Read student WITHIN the session so no other writer can change the balance
+    // between the read and the write — eliminates TOCTOU race.
+    const student = await User.findById(params.studentId).session(session);
+    if (!student) {
+      throw new Error(`Student ${params.studentId} not found`);
+    }
+    if (student.role !== 'student') {
+      throw new Error('Target user is not a student');
+    }
+
+    const currentBalance = student.coins ?? 0;
+    const newBalance = currentBalance + params.amount;
+    if (newBalance < 0) {
+      throw new Error(`Insufficient coins: balance ${currentBalance}, required ${Math.abs(params.amount)}`);
+    }
+
+    // Update student balance within the transaction
+    await User.findByIdAndUpdate(params.studentId, { coins: newBalance }, { session });
+
+    // Create transaction document within the same session
+    const tx = new this({
+      studentId: params.studentId,
+      type: params.type,
+      amount: params.amount,
+      balanceAfter: newBalance,
+      reference: params.reference,
+      description: params.description,
+    });
+    await tx.save({ session });
+    return tx;
+  };
+
+  // If caller provided a session, use it directly (caller manages tx lifecycle)
+  if (params.session) {
+    return executeInSession(params.session);
   }
-  if (student.role !== 'student') {
-    throw new Error('Target user is not a student');
+
+  // No session provided — create a new one and wrap in withTransaction
+  const session = await mongoose.startSession();
+  try {
+    return await session.withTransaction((sess) => executeInSession(sess));
+  } finally {
+    await session.endSession();
   }
-
-  const currentBalance = student.coins ?? 0;
-  const newBalance = currentBalance + params.amount;
-  if (newBalance < 0) {
-    throw new Error(`Insufficient coins: balance ${currentBalance}, required ${Math.abs(params.amount)}`);
-  }
-
-  // Update student balance atomically
-  await User.findByIdAndUpdate(params.studentId, { coins: newBalance });
-
-  const tx = await this.create({
-    studentId: params.studentId,
-    type: params.type,
-    amount: params.amount,
-    balanceAfter: newBalance,
-    reference: params.reference,
-    description: params.description,
-  });
-
-  return tx;
 };
 
 // ---- Interface for statics ----
@@ -129,6 +152,7 @@ export interface ITransactionModel extends Model<ITransaction> {
     amount: number;
     reference?: { model: string; id: string };
     description?: string;
+    session?: mongoose.ClientSession;
   }): Promise<ITransaction>;
 }
 

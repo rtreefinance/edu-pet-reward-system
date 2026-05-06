@@ -1,4 +1,5 @@
 import { Router, Response } from 'express';
+import mongoose from 'mongoose';
 import { TransactionType, COIN_REWARDS } from '../../shared/types';
 import { Pet, Transaction, User } from '../models';
 import { authenticate, requireRole, AuthRequest } from '../middleware/auth';
@@ -88,25 +89,34 @@ router.post('/feed', requireRole(UserRole.Student), async (req: AuthRequest, res
       return;
     }
 
-    // Deduct coins via Transaction.record
-    await Transaction.record({
-      studentId,
-      type: TransactionType.FeedPet,
-      amount: -COIN_REWARDS.FEED_PET_COST,
-      reference: { model: 'Pet', id: pet._id.toString() },
-      description: '喂食宠物',
-    });
+    // Wrap coin deduction and pet save in a single atomic transaction
+    const session = await mongoose.startSession();
+    try {
+      await session.withTransaction(async () => {
+        // Deduct coins via Transaction.record (uses the session internally)
+        await Transaction.record({
+          studentId,
+          type: TransactionType.FeedPet,
+          amount: -COIN_REWARDS.FEED_PET_COST,
+          reference: { model: 'Pet', id: pet._id.toString() },
+          description: '喂食宠物',
+          session,
+        });
 
-    // Feed the pet
-    const result = pet.feed();
-    await pet.save();
+        // Feed the pet
+        pet.feed();
+        await pet.save({ session });
+      });
+    } finally {
+      await session.endSession();
+    }
 
     // Get updated balance
     const student = await User.findById(studentId);
 
     res.json({
-      hunger: result.hunger,
-      mood: result.mood,
+      hunger: pet.hunger,
+      mood: pet.mood,
       coins: student?.coins ?? 0,
       pet: pet.toJSON(),
     });

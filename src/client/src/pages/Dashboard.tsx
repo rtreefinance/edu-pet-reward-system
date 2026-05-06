@@ -8,7 +8,7 @@ import PetCard from '../components/PetCard';
 import StreakBadge from '../components/StreakBadge';
 
 export default function Dashboard() {
-  const { user, refreshUser } = useAuth();
+  const { user, refreshUser, logout } = useAuth();
   const { call } = useApi();
   const navigate = useNavigate();
   const student = user as StudentUser;
@@ -78,6 +78,11 @@ export default function Dashboard() {
     }
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
   if (!student) return null;
 
   return (
@@ -93,11 +98,19 @@ export default function Dashboard() {
             <p className="font-bold text-text-main">{student.displayName}</p>
           </div>
         </div>
-        <div className="relative">
-          <CoinDisplay coins={student.coins} size="lg" showAnim={showCoinAnim} />
-          {showCoinAnim && (
-            <div className="absolute -top-2 -right-2 text-xs animate-bounce-in">+10</div>
-          )}
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <CoinDisplay coins={student.coins} size="lg" showAnim={showCoinAnim} />
+            {showCoinAnim && (
+              <div className="absolute -top-2 -right-2 text-xs animate-bounce-in">+10</div>
+            )}
+          </div>
+          <button
+            onClick={handleLogout}
+            className="text-xs text-text-sub hover:text-red bg-pink-light hover:bg-pink-200 px-3 py-1.5 rounded-button transition-colors"
+          >
+            退出
+          </button>
         </div>
       </div>
 
