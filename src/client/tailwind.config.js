@@ -82,5 +82,11 @@ export default {
       },
     },
   },
+  safelist: [
+    // Gray shades — used in JSX but JIT needs guarantee for @apply fallback
+    { pattern: /^bg-gray-(100|200)$/ },
+    { pattern: /^border-gray-(100|200)$/ },
+    { pattern: /^text-gray-(500|600)$/ },
+  ],
   plugins: [],
 };

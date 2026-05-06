@@ -48,16 +48,16 @@
     @apply badge bg-green-light text-green;
   }
   .badge-yellow {
-    @apply badge bg-yellow-light text-yellow-600;
+    @apply badge bg-yellow-light text-yellow;
   }
   .badge-purple {
     @apply badge bg-purple-light text-purple;
   }
   .skeleton {
-    @apply bg-gray-200 rounded-lg animate-pulse;
+    @apply bg-gray-light rounded-lg animate-pulse;
   }
   .input-field {
-    @apply w-full px-4 py-3 rounded-button border-2 border-gray-200 bg-white
+    @apply w-full px-4 py-3 rounded-button border-2 border-gray-light bg-white
            text-text-main placeholder-text-sub focus:outline-none focus:border-primary
            transition-colors duration-200;
   }
